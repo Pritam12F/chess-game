@@ -11,12 +11,7 @@ export class GameManager {
     this.users = [];
   }
 
-  addUser(socket: WebSocket) {
-    if (this.pendingUsers) {
-      this.games.push(new Game());
-      this.pendingUsers = null;
-    } else {
-      this.pendingUsers = socket;
-    }
-  }
+  addUser(socket: WebSocket) {}
+
+  removeUser(socket: WebSocket) {}
 }
