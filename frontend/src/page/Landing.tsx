@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Footer } from "../components/Footer";
 import { Navbar } from "../components/navbar";
 
 export function Landing() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-[#1a1a1a] text-white">
       <Navbar />
@@ -19,7 +22,13 @@ export function Landing() {
                   the next level.
                 </p>
                 <div className="mt-6">
-                  <Button>Learn More</Button>
+                  <Button
+                    onClick={() => {
+                      navigate("/game");
+                    }}
+                  >
+                    Play
+                  </Button>
                 </div>
               </div>
               <div className="flex justify-center">
