@@ -6,17 +6,17 @@ export const useSocket = () => {
 
   useEffect(() => {
     const ws = new WebSocket(WS_URL);
-
     ws.onopen = () => {
-      console.log("Connected to websocket");
       setSocket(ws);
     };
 
     ws.onclose = () => {
-      console.log("Disconnected");
+      setSocket(null);
     };
 
-    return () => ws.close();
+    return () => {
+      ws.close();
+    };
   }, []);
 
   return socket;
