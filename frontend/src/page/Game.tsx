@@ -11,6 +11,7 @@ export const Game = () => {
   const socket = useSocket();
   const [chess, setChess] = useState<Chess>(new Chess());
   const [board, setBoard] = useState(chess.board());
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     if (!socket) {
@@ -19,7 +20,6 @@ export const Game = () => {
 
     socket.onmessage = (event) => {
       const dataParsed = JSON.parse(event.data);
-      console.log(dataParsed);
 
       switch (dataParsed.message) {
         case INIT_MESSAGE: {
@@ -29,15 +29,22 @@ export const Game = () => {
           break;
         }
         case MOVE_MESSAGE: {
-          chess.move(dataParsed.move);
-          setBoard(chess.board());
-          console.log("Piece moved successfully");
+          const move = dataParsed.payload;
+          try {
+            chess.move(move);
+            setBoard(chess.board());
+            console.log("move made");
+          } catch {
+            alert("Invalid move");
+          }
           break;
         }
         case GAME_OVER: {
           alert(`Game over!! ${dataParsed.payload.winner} wins`);
           break;
         }
+        default:
+          console.log(dataParsed.payload);
       }
     };
   }, [socket]);
@@ -56,21 +63,24 @@ export const Game = () => {
               <div className="flex flex-col items-center justify-center">
                 <div className="w-full max-w-[700px] aspect-square bg-[#333] rounded-lg flex items-center justify-center">
                   <div className="text-2xl font-bold">
-                    <Chessboard board={board} />
+                    <Chessboard board={board} socket={socket} />
                   </div>
                 </div>
                 <div className="mt-6">
-                  <Button
-                    onClick={() => {
-                      socket.send(
-                        JSON.stringify({
-                          type: INIT_MESSAGE,
-                        })
-                      );
-                    }}
-                  >
-                    Play Now
-                  </Button>
+                  {!started && (
+                    <Button
+                      onClick={() => {
+                        socket.send(
+                          JSON.stringify({
+                            type: INIT_MESSAGE,
+                          })
+                        );
+                        setStarted(true);
+                      }}
+                    >
+                      Play Now
+                    </Button>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center space-y-4 text-center">

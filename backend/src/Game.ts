@@ -41,15 +41,19 @@ export class Game {
     }
   ) {
     if (this.movesCount % 2 === 0 && socket !== this.player1) {
+      console.log("Early return 1");
       return;
     }
     if (this.movesCount % 2 !== 0 && socket !== this.player2) {
+      console.log("Early return 2");
       return;
     }
     try {
       this.board.move(move);
       this.movesCount++;
+      console.log("Moved!!");
     } catch {
+      console.log("Error");
       return {
         error: "Illegal move",
       };
@@ -79,20 +83,18 @@ export class Game {
       return;
     }
 
-    if (this.movesCount % 2 === 0) {
-      this.player1.send(
-        JSON.stringify({
-          message: MOVE_MESSAGE,
-          payload: move,
-        })
-      );
-    } else {
-      this.player2.send(
-        JSON.stringify({
-          message: MOVE_MESSAGE,
-          payload: move,
-        })
-      );
-    }
+    this.player1.send(
+      JSON.stringify({
+        message: MOVE_MESSAGE,
+        payload: move,
+      })
+    );
+
+    this.player2.send(
+      JSON.stringify({
+        message: MOVE_MESSAGE,
+        payload: move,
+      })
+    );
   }
 }
